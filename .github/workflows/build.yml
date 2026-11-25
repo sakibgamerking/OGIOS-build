@@ -1,0 +1,18 @@
+name: Build HYper key-enabled IPA
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with: { xcode-version: latest-stable }
+      - run: chmod +x build_unsigned.sh build_esign_ready_ipa.sh && ./build_unsigned.sh
+      - run: ./build_esign_ready_ipa.sh build/OGIOS-dev-unsigned.ipa
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OGIOS-dev-unsigned-ipa
+          path: build/OGIOS-dev-unsigned.ipa
